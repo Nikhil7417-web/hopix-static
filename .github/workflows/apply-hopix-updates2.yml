@@ -1,9 +1,6 @@
 name: Apply HOPIX updates retry
 
-on:
-  push:
-    paths:
-      - '.github/workflows/apply-hopix-updates2.yml'
+on: push
 
 permissions:
   contents: write
