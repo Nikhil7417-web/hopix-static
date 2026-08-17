@@ -1,0 +1,102 @@
+name: Fix consultation form
+
+on:
+  push:
+    paths:
+      - '.github/workflows/update-consultation-form.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update consultation form handler
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          old = '''    consultationForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('consultEmail').value.trim();
+      const phone = document.getElementById('consultPhone').value.trim();
+      const message = document.getElementById('consultMessage').value.trim();
+
+      const subject = encodeURIComponent('Free Consultation Request - HOPIX Tech Solutions');
+      const body = encodeURIComponent(`Email: ${email}\\nPhone: ${phone}\\n\\nMessage:\\n${message}`);
+      window.location.href = `mailto:info@hopix.in?subject=${subject}&body=${body}`;
+
+      consultationForm.classList.add('d-none');
+      consultationSuccess.classList.remove('d-none');
+    });'''
+
+          new = '''    consultationForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('consultEmail').value.trim();
+      const phone = document.getElementById('consultPhone').value.trim();
+      const message = document.getElementById('consultMessage').value.trim();
+      const submitButton = consultationForm.querySelector('button[type="submit"]');
+      const originalButtonHtml = submitButton.innerHTML;
+
+      submitButton.disabled = true;
+      submitButton.innerHTML = 'Sending... <i class="bi bi-arrow-repeat ms-2"></i>';
+
+      try {
+        const response = await fetch('https://formsubmit.co/ajax/info@hopix.in', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email,
+            phone: phone,
+            message: message,
+            _subject: 'Free Consultation Request - HOPIX Tech Solutions',
+            _replyto: email,
+            _template: 'table',
+            _url: 'https://hopix.in'
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data.success === false || data.success === 'false') {
+          throw new Error(data.message || 'Unable to send the request.');
+        }
+
+        consultationForm.classList.add('d-none');
+        consultationSuccess.classList.remove('d-none');
+      } catch (error) {
+        console.error('Consultation form error:', error);
+        alert('Sorry, your request could not be sent right now. Please try again or call +91 7417477208.');
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalButtonHtml;
+      }
+    });'''
+
+          if old not in text:
+              raise SystemExit('Expected consultation form handler was not found; no changes made.')
+
+          text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+
+      - name: Commit website fix and remove one-time workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git rm .github/workflows/update-consultation-form.yml
+          git commit -m "Fix consultation form email submission"
+          git push
