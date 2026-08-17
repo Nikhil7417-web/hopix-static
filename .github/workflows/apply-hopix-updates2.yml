@@ -92,4 +92,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git rm index.html .github/workflows/apply-hopix-updates.yml .github/workflows/apply-hopix-updates2.yml HOPIX_UPDATE_TRIGGER.txt
+          git rm .github/workflows/apply-hopix-updates.yml .github/workflows/apply-hopix-updates2.yml HOPIX_UPDATE_TRIGGER.txt
+          git commit -m "Improve mobile navbar logo animation and contact numbers"
+          git push
