@@ -1887,18 +1887,12 @@
       consultationSuccess.classList.add('d-none');
     });
 
-    // ── Back to top ──
-    const backToTop = document.getElementById('backToTop');
-    if (backToTop) {
-      window.addEventListener('scroll', () => {
-        backToTop.classList.toggle('visible', window.scrollY > 500);
-      });
-      backToTop.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    }
+    /* ── Back to top ── */
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
-    // ── Close mobile menu on link click ──
+    /* ── Close mobile menu on link click ── */
     navLinks.forEach(link => {
       link.addEventListener('click', () => {
         const navCollapse = document.getElementById('navbarNav');
