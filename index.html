@@ -342,6 +342,162 @@
       font-size: 0.88rem !important;
     }
 
+
+
+    /* ── HOPIX logo: continuous premium animation ── */
+    .navbar-brand-custom {
+      position: relative;
+      display: inline-block;
+      transform-origin: left center;
+      animation: hopixLogoPulse 4.8s ease-in-out infinite;
+    }
+
+    .navbar-brand-custom span {
+      display: inline-block;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 240% 100%;
+      animation: hopixGradientLoop 5.5s ease-in-out infinite;
+    }
+
+    .navbar-brand-custom::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 36px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--gradient);
+      transform-origin: left center;
+      animation: hopixUnderlineLoop 4.8s ease-in-out infinite;
+    }
+
+    .navbar-brand-custom::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      bottom: 2px;
+      left: -10px;
+      width: 3px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.95);
+      opacity: 0;
+      transform: translateX(-10px) skewX(-14deg);
+      pointer-events: none;
+      animation: hopixLightSweepLoop 5.8s ease-in-out infinite;
+    }
+
+    @keyframes hopixLogoPulse {
+      0%, 72%, 100% { transform: translateY(0) scale(1); }
+      78% { transform: translateY(-1px) scale(1.015); }
+      84% { transform: translateY(0) scale(1); }
+    }
+
+    @keyframes hopixGradientLoop {
+      0%, 100% { background-position: 0% 50%; }
+      45% { background-position: 100% 50%; }
+      70% { background-position: 35% 50%; }
+    }
+
+    @keyframes hopixUnderlineLoop {
+      0%, 72%, 100% { transform: scaleX(1); opacity: 0.8; }
+      80% { transform: scaleX(0.72); opacity: 0.45; }
+      88% { transform: scaleX(1); opacity: 1; }
+    }
+
+    @keyframes hopixLightSweepLoop {
+      0%, 45% { opacity: 0; transform: translateX(-10px) skewX(-14deg); }
+      50% { opacity: 0.9; }
+      58% { opacity: 0; transform: translateX(62px) skewX(-14deg); }
+      100% { opacity: 0; transform: translateX(62px) skewX(-14deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .navbar-brand-custom,
+      .navbar-brand-custom span,
+      .navbar-brand-custom::before,
+      .navbar-brand-custom::after {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* ── Mobile navbar: clean dropdown ── */
+    @media (max-width: 991.98px) {
+      .navbar-custom {
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .navbar-custom .container {
+        position: relative;
+      }
+
+      #navbarNav {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        left: auto;
+        width: min(250px, calc(100vw - 30px));
+        margin: 0 !important;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.99);
+        border: 1px solid rgba(37, 99, 235, 0.12);
+        border-radius: 16px;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+        z-index: 1100;
+        overflow: hidden;
+      }
+
+      #navbarNav .navbar-nav {
+        width: 100%;
+        margin: 0 !important;
+        gap: 2px;
+      }
+
+      #navbarNav .nav-item {
+        width: 100%;
+      }
+
+      #navbarNav .nav-link-custom {
+        display: block;
+        width: 100%;
+        padding: 10px 13px !important;
+        border-radius: 10px;
+        font-size: 0.92rem;
+      }
+
+      #navbarNav .nav-link-custom::after {
+        display: none;
+      }
+
+      #navbarNav .nav-link-custom:hover,
+      #navbarNav .nav-link-custom.active {
+        background: rgba(37, 99, 235, 0.07);
+      }
+
+      #navbarNav .btn-nav-cta {
+        display: block;
+        width: 100%;
+        margin-top: 8px;
+        padding: 10px 14px !important;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      #navbarNav {
+        right: 0;
+        width: min(235px, calc(100vw - 24px));
+      }
+    }
+
     /* ── Hero ── */
     .hero-section {
       min-height: 100vh;
@@ -1171,6 +1327,17 @@
       font-size: 0.9rem;
     }
 
+
+    .footer-contact-item span a {
+      color: inherit;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-contact-item span a:hover {
+      color: var(--white);
+    }
+
     .footer-contact-item i {
       color: var(--accent);
       font-size: 1.1rem;
@@ -1383,15 +1550,102 @@
         text-align: center;
       }
     }
+  
+    /* ── Multiple animated HOPIX watermarks ── */
+    .hopix-watermark-wall {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .hopix-watermark {
+      position: absolute;
+      left: var(--x);
+      top: -90px;
+      font-size: clamp(1.5rem, 2.8vw, 3rem);
+      font-weight: 800;
+      letter-spacing: .04em;
+      color: rgba(37, 99, 235, .085);
+      -webkit-text-stroke: 1px rgba(37, 99, 235, .025);
+      white-space: nowrap;
+      opacity: var(--opacity);
+      transform: rotate(var(--rotate));
+      animation: hopixWatermarkFall var(--duration) linear infinite;
+      animation-delay: var(--delay);
+    }
+
+    .hopix-watermark::after {
+      content: 'HOPIX';
+      position: absolute;
+      inset: 0;
+      color: transparent;
+      background: linear-gradient(
+        100deg,
+        transparent 35%,
+        rgba(6, 182, 212, .18) 50%,
+        transparent 65%
+      );
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: hopixWatermarkShine 4s ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes hopixWatermarkFall {
+      0% {
+        transform: translateY(-120px) rotate(var(--rotate));
+        opacity: 0;
+      }
+      8% { opacity: var(--opacity); }
+      88% { opacity: var(--opacity); }
+      100% {
+        transform: translateY(calc(100vh + 160px)) rotate(var(--rotate));
+        opacity: 0;
+      }
+    }
+
+    @keyframes hopixWatermarkShine {
+      0%, 35% { background-position: -120% 50%; }
+      65%, 100% { background-position: 120% 50%; }
+    }
+
+    @media (max-width: 767.98px) {
+      .hopix-watermark {
+        font-size: 1.25rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hopix-watermark,
+      .hopix-watermark::after {
+        animation: none;
+      }
+    }
+
   </style>
 </head>
 
 <body>
+  <div class="hopix-watermark-wall" aria-hidden="true">
+    <span class="hopix-watermark" style="--x:3%;--delay:-1s;--duration:13s;--rotate:-7deg;--opacity:.57">HOPIX</span>
+    <span class="hopix-watermark" style="--x:16%;--delay:-7s;--duration:15s;--rotate:6deg;--opacity:.49">HOPIX</span>
+    <span class="hopix-watermark" style="--x:29%;--delay:-4s;--duration:12s;--rotate:-5deg;--opacity:.55">HOPIX</span>
+    <span class="hopix-watermark" style="--x:42%;--delay:-10s;--duration:16s;--rotate:7deg;--opacity:.32">HOPIX</span>
+    <span class="hopix-watermark" style="--x:55%;--delay:-2s;--duration:14s;--rotate:-6deg;--opacity:.55">HOPIX</span>
+    <span class="hopix-watermark" style="--x:68%;--delay:-8s;--duration:13s;--rotate:5deg;--opacity:.50">HOPIX</span>
+    <span class="hopix-watermark" style="--x:81%;--delay:-5s;--duration:15s;--rotate:-7deg;--opacity:.52">HOPIX</span>
+    <span class="hopix-watermark" style="--x:93%;--delay:-11s;--duration:17s;--rotate:6deg;--opacity:.30">HOPIX</span>
+  </div>
+
 
   <!-- ═══════════════════ NAVBAR ═══════════════════ -->
   <nav class="navbar navbar-expand-lg navbar-custom fixed-top" id="mainNavbar">
     <div class="container">
-      <a class="navbar-brand-custom" href="#home">HOPI<span>X</span></a>
+      <a class="navbar-brand-custom" href="#home" aria-label="HOPIX Home">HOPI<span>X</span></a>
 
       <button class="navbar-toggler navbar-toggler-custom" type="button" data-bs-toggle="collapse"
         data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -1730,7 +1984,10 @@
           </div>
           <div class="footer-contact-item">
             <i class="bi bi-telephone"></i>
-            <span>+91 7417477208</span>
+            <span>
+              <a href="tel:+917417477208">+91 7417477208</a><br>
+              <a href="tel:+917055889943">+91 7055889943</a>
+            </span>
           </div>
           <div class="footer-contact-item">
             <i class="bi bi-globe"></i>
@@ -1890,6 +2147,24 @@
     /* ── Back to top ── */
     backToTop.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    /* ── Close mobile dropdown on outside click / Escape ── */
+    const navCollapse = document.getElementById('navbarNav');
+    const mainNavbar = document.getElementById('mainNavbar');
+
+    document.addEventListener('click', (event) => {
+      if (!navCollapse || !navCollapse.classList.contains('show')) return;
+
+      if (!mainNavbar.contains(event.target)) {
+        bootstrap.Collapse.getOrCreateInstance(navCollapse).hide();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && navCollapse?.classList.contains('show')) {
+        bootstrap.Collapse.getOrCreateInstance(navCollapse).hide();
+      }
     });
 
     /* ── Close mobile menu on link click ── */
