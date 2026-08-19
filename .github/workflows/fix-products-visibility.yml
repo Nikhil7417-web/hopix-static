@@ -1,0 +1,38 @@
+name: Fix HOPIX Products Visibility
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fix product card animation visibility
+        shell: python
+        run: |
+          from pathlib import Path
+          path = Path('index.html')
+          html = path.read_text(encoding='utf-8')
+          old = '<article class="product-card-home animate-on-scroll">'
+          new = '<article class="product-card-home">'
+          if old not in html:
+              raise SystemExit('Product card pattern not found.')
+          html = html.replace(old, new)
+          path.write_text(html, encoding='utf-8')
+
+      - name: Commit and remove fixer
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git rm -f .github/workflows/fix-products-visibility.yml
+          git commit -m "Fix homepage product cards visibility"
+          git push
