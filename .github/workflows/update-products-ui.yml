@@ -1,0 +1,41 @@
+name: Update HOPIX Products UI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/products_ui_patch.py'
+      - 'scripts/integrate_products.py'
+      - 'index.html'
+      - 'products/index.html'
+      - '.github/workflows/update-products-ui.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-products-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply product integration
+        run: python scripts/integrate_products.py
+
+      - name: Apply product UI patch
+        run: python scripts/products_ui_patch.py
+
+      - name: Commit generated changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html products/index.html
+          if git diff --cached --quiet; then
+            echo 'No generated changes.'
+          else
+            git commit -m 'Update HOPIX product showcase and detail views'
+            git push
+          fi
