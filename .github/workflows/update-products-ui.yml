@@ -37,3 +37,5 @@ jobs:
             git commit -m 'Update HOPIX product showcase and detail views'
             git push
           fi
+
+# retry trigger
