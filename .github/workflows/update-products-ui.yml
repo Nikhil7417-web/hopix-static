@@ -23,6 +23,9 @@ jobs:
       - name: Apply product UI patch
         run: python scripts/products_ui_patch.py
 
+      - name: Apply minimal homepage product cards
+        run: python scripts/home_products_minimal_patch.py
+
       - name: Commit generated changes
         run: |
           git config user.name 'github-actions[bot]'
