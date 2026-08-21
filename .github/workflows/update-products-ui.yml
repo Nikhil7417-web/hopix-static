@@ -3,13 +3,6 @@ name: Update HOPIX Products UI
 on:
   push:
     branches: [main]
-    paths:
-      - 'scripts/products_ui_patch.py'
-      - 'scripts/integrate_products.py'
-      - 'index.html'
-      - 'products/index.html'
-      - 'PRODUCTS-INTEGRATION-TRIGGER.txt'
-      - '.github/workflows/update-products-ui.yml'
 
 permissions:
   contents: write
