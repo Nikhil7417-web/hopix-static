@@ -1,1 +1,2 @@
-Temporary trigger for HOPIX Products integration workflow. This file can be removed after the workflow completes.
+HOPIX products integration trigger
+Product showcase, detail popup, gallery and admin link update.
