@@ -1,0 +1,57 @@
+name: Fix Products Page Links
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-products-page-links.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch products page
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('products/index.html')
+          s=p.read_text(encoding='utf-8')
+
+          if '/* Product gallery + direct live product button */' not in s:
+              s=s.replace('</style>', '''
+          /* Product gallery + direct live product button */
+          .gallery{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.gallery img{width:82px;height:62px;object-fit:cover;border-radius:10px;border:1px solid #dfe7f1;background:#f7faff}
+          .view{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--g);color:#fff;border-radius:11px;padding:11px 15px;font-size:12px;font-weight:700;border:0;cursor:pointer;text-decoration:none}.view:hover{color:#fff;transform:translateY(-1px)}
+          </style>''',1)
+
+          # Replace the whole render function so each product card has a direct live URL.
+          render=re.compile(r'function render\(\)\{.*?\n\}\n\nwindow\.openProduct',re.S)
+          replacement=r'''function render(){const q=search.value.trim().toLowerCase(),list=products.filter(p=>(val(p,'name','product_name')+' '+val(p,'category')+' '+val(p,'short_description','description')).toLowerCase().includes(q));count.textContent=`${list.length} product${list.length===1?'':'s'} published`;if(!list.length){grid.innerHTML='<div class="state">No published products found.</div>';return}grid.innerHTML=list.map((p,i)=>{const name=val(p,'name','product_name')||'HOPIX Product',cat=val(p,'category')||'Digital Product',desc=val(p,'short_description','short','description')||'A digital product built by HOPIX Tech Solutions.',img=val(p,'image_url','image','main_image_url'),tech=arr(val(p,'technologies','tech')),url=val(p,'product_url','live_url','website_url','demo_url','url');return `<article class="card"><div class="thumb">${img?`<img src="${esc(img)}" alt="${esc(name)}">`:''}<span class="cat">${esc(cat)}</span></div><div class="body"><h3>${esc(name)}</h3><p>${esc(desc)}</p><div class="tags">${tech.slice(0,5).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>${url?`<a class="view" href="${esc(url)}" target="_blank" rel="noopener">View Product <i class="bi bi-box-arrow-up-right"></i></a>`:'<span class="view" style="opacity:.55;cursor:default">Live Product Unavailable</span>'}</div></article>`}).join('');window.currentList=list}
+
+window.openProduct'''
+          s,n=render.subn(replacement,s,count=1)
+          if n!=1: raise SystemExit('Products render function not found')
+
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit products page
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add products/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Make product cards open live product websites"
+          git push
+      - name: Remove patch workflow
+        if: success()
+        run: |
+          git rm .github/workflows/fix-products-page-links.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Remove one-time products page patch workflow"
+          git push
