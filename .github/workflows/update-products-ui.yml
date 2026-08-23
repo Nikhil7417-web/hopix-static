@@ -20,14 +20,17 @@ jobs:
       - name: Apply final homepage products fix
         run: python scripts/final_home_products_fix.py
 
+      - name: Apply footer social links
+        run: python scripts/add_footer_socials.py
+
       - name: Commit generated homepage
         run: |
           git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.email '41898282+users.noreply.github.com'
           git add index.html
           if git diff --cached --quiet; then
             echo 'No generated changes.'
           else
-            git commit -m 'Finalize homepage product cards and logo animation'
+            git commit -m 'Add HOPIX footer social links'
             git push
           fi
