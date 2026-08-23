@@ -4,8 +4,7 @@ import re
 INDEX = Path('index.html')
 html = INDEX.read_text(encoding='utf-8')
 
-# Always restore the HOPIX navbar logo animation. The old version only added it
-# when absent, so later homepage patches could silently leave the logo static.
+# Always restore the HOPIX navbar logo animation.
 logo_css = '''
 /* HOPIX premium logo animation */
 .navbar-brand-custom{position:relative;display:inline-block;transform-origin:left center;animation:hopixLogoEntrance 1.2s cubic-bezier(.22,1,.36,1) both}
@@ -17,14 +16,11 @@ logo_css = '''
 @keyframes hopixXFlow{0%{background-position:0 50%}45%{background-position:100% 50%}100%{background-position:0 50%}}
 @keyframes hopixUnderline{from{width:0}to{width:32px}}
 @keyframes hopixLightSweep{0%{opacity:0;transform:translateX(-8px) skewX(-14deg)}18%{opacity:.95}100%{opacity:0;transform:translateX(55px) skewX(-14deg)}}
-@media(prefers-reduced-motion:reduce){.navbar-brand-custom,.navbar-brand-custom span,.navbar-brand-custom:before,.navbar-brand-custom:after{animation:none;opacity:1;transform:none}}
 '''
-
-# Remove any previous copy, then inject exactly one fresh copy.
-html = re.sub(r'/\* HOPIX premium logo animation \*/.*?@media\(prefers-reduced-motion:reduce\)\{.*?\}\n?', '', html, flags=re.S)
+html = re.sub(r'/\* HOPIX premium logo animation \*/.*?(?=</style>)', '', html, flags=re.S)
 html = html.replace('</style>', logo_css + '\n</style>', 1)
 
-# Replace ONLY the homepage Products section.
+# Replace ONLY homepage Products section.
 section = re.compile(r'<section\s+class=["\']products-section[^>]*>.*?</section>', re.S | re.I)
 products = '''<section class="products-section section-padding" id="products">
   <div class="container">
@@ -46,16 +42,16 @@ if n != 1:
 addon = '''
 <style id="hopix-home-minimal-products">
 .products-section .products-grid-home{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px;perspective:1400px}
-.products-section .product-card-home{position:relative;height:365px;border-radius:28px;overflow:hidden;background:#fff;border:1px solid rgba(37,99,235,.12);box-shadow:0 18px 50px rgba(15,23,42,.10);transform-style:preserve-3d;transition:transform .25s ease,box-shadow .35s ease;cursor:default}
+.products-section .product-card-home{position:relative;height:365px;border-radius:28px;overflow:hidden;background:#fff;border:1px solid rgba(37,99,235,.12);box-shadow:0 18px 50px rgba(15,23,42,.10);transform-style:preserve-3d;transition:transform .25s ease,box-shadow .35s ease}
 .products-section .product-card-home:hover{box-shadow:0 30px 75px rgba(37,99,235,.20)}
 .home-minimal-image-wrap{position:absolute;inset:0;background:linear-gradient(145deg,#edf5ff,#f9fcff 55%,#e9f8ff);display:flex;align-items:center;justify-content:center;transform-style:preserve-3d}
 .home-minimal-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transform:translateZ(28px) scale(.94);filter:drop-shadow(0 25px 25px rgba(15,23,42,.18));transition:transform .45s ease}
 .products-section .product-card-home:hover .home-minimal-image{transform:translateZ(42px) scale(.98)}
-.home-minimal-name{position:absolute;left:20px;right:20px;bottom:20px;z-index:5;padding:15px 18px;border-radius:17px;background:rgba(255,255,255,.86);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.9);box-shadow:0 12px 30px rgba(15,23,42,.12);font-size:1.2rem;font-weight:800;text-align:center;color:#0f172a;transform:translateZ(55px);transition:.3s}
-.products-section .product-card-home:hover .home-minimal-name{transform:translateZ(72px) translateY(-4px)}
+.home-minimal-name{position:absolute;left:18px;right:18px;bottom:18px;z-index:5;padding:18px 20px;border-radius:18px;background:rgba(255,255,255,.90);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.95);box-shadow:0 14px 35px rgba(15,23,42,.15);font-size:clamp(1.45rem,2.5vw,2rem);line-height:1.2;font-weight:800;text-align:center;color:#0f172a;transform:translateZ(55px);transition:.3s}
+.products-section .product-card-home:hover .home-minimal-name{transform:translateZ(72px) translateY(-5px)}
 .products-section .products-cta-home{margin-top:42px;text-align:center}
 @media(max-width:991px){.products-section .products-grid-home{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:650px){.products-section .products-grid-home{grid-template-columns:1fr;gap:22px}.products-section .product-card-home{height:330px}}
+@media(max-width:650px){.products-section .products-grid-home{grid-template-columns:1fr;gap:22px}.products-section .product-card-home{height:330px}.home-minimal-name{font-size:1.5rem}}
 </style>
 <script>
 (function(){
@@ -79,8 +75,6 @@ addon = '''
  load();
 })();
 </script>'''
-
-# Replace previous minimal addon if present, otherwise append once.
 html = re.sub(r'<style id="hopix-home-minimal-products">.*?</script>', '', html, flags=re.S)
 html = html.replace('</body>', addon + '\n</body>', 1)
 INDEX.write_text(html, encoding='utf-8')
