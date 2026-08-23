@@ -1,13 +1,13 @@
 from pathlib import Path
 
 INDEX = Path('index.html')
-MARK = '/* HOPIX HOME PRODUCTS MINIMAL V1 */'
+MARK = '/* HOPIX HOME PRODUCTS MINIMAL V2 */'
 
 html = INDEX.read_text(encoding='utf-8')
 
 css = r'''
 <style>
-/* HOPIX HOME PRODUCTS MINIMAL V1 */
+/* HOPIX HOME PRODUCTS MINIMAL V2 */
 .products-section .products-grid-home{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px;perspective:1400px;align-items:stretch}
 .products-section .product-card-home{position:relative;height:365px;border-radius:28px;overflow:hidden;background:#fff;border:1px solid rgba(37,99,235,.12);box-shadow:0 18px 50px rgba(15,23,42,.10);transform-style:preserve-3d;transition:transform .25s ease,box-shadow .35s ease,border-color .35s ease;cursor:pointer}
 .products-section .product-card-home:hover{box-shadow:0 30px 75px rgba(37,99,235,.20);border-color:rgba(37,99,235,.28)}
@@ -28,7 +28,7 @@ css = r'''
 
 js = r'''
 <script>
-/* HOPIX HOME PRODUCTS MINIMAL JS V1 */
+/* HOPIX HOME PRODUCTS MINIMAL JS V2 */
 (function(){
  const grid=document.getElementById('homeProductsGrid');
  if(!grid)return;
@@ -64,8 +64,7 @@ js = r'''
  }
  const cta=document.querySelector('.products-cta-home a');
  if(cta){cta.href='products/';cta.textContent='Explore Products';}
- const oldPopups=['homeProductModal','hpxHomeModal'];
- oldPopups.forEach(id=>{const el=document.getElementById(id);if(el)el.remove();});
+ ['homeProductModal','hpxHomeModal'].forEach(id=>{const el=document.getElementById(id);if(el)el.remove();});
  load();
 })();
 </script>
